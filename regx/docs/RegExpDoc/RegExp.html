@@ -1,0 +1,568 @@
+<HTML>
+<HEAD>
+<TITLE>
+RegExp.html
+</TITLE>
+<LINK REL="STYLESHEET" TYPE="text/css" HREF="D:/hak/hlt/classes/resources/Hilite.Style.css">
+</HEAD>
+<BODY BGCOLOR="#CCCCFF" TEXT="BLACK">
+<CENTER>
+<TABLE BGCOLOR=white WIDTH=50% BORDER=5 CELLPADDING=20>
+<TR><TD ALIGN=CENTER>
+<SPAN STYLE="FONT-SIZE:XX-LARGE"><TT><B>RegExp.grm</B></TT></SPAN>
+<P>
+</TD></TR>
+</TABLE>
+</CENTER>
+<PRE>
+<SPAN STYLE="COLOR:WHITE"><EM>// FILE. . . . . /home/hak/hlt/src/hlt/language/jaccapps/regx/sources/RegExp.grm
+</EM></SPAN><SPAN STYLE="COLOR:WHITE"><EM>// EDIT BY . . . Hassan Ait-Kaci
+</EM></SPAN><SPAN STYLE="COLOR:WHITE"><EM>// ON MACHINE. . Hp-Dv7
+</EM></SPAN><SPAN STYLE="COLOR:WHITE"><EM>// STARTED ON. . Thu Oct 18 17:16:36 2012
+</EM></SPAN>
+
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+  This is a grammar for defining regular expressions and simplifying
+  them.  It implements an interactive regular expression parser and
+  normalizer. One enters a regular expression, or a definition
+  associating a regular expression to an indentifier, and it is parsed
+  and, if syntactically correct, it is normalized and its normal form
+  is printed back.
+ 
+  <p>
+  
+  <font size="-1" color="red"><tt>[See also the <a
+  href="index.html">grammar source files</a>]</tt></font>
+ 
+  <p>
+  
+       
+<P><TABLE>
+<TR><TD VALIGN=TOP><STRONG>Copyright:</STRONG></TD><TD>&nbsp;</TD>
+<TD>&copy; <a href="http://www.hassan-ait-kaci.net/">by the author</a>
+</TD></tr>
+<TR><TD VALIGN=TOP><STRONG>Author:</STRONG></TD><TD>&nbsp;</TD>
+<TD><a href="mailto:hak@acm.org">Hassan A&iuml;t-Kaci</a>
+</TD></tr>
+<TR><TD VALIGN=TOP><STRONG>Version:</STRONG></TD><TD>&nbsp;</TD>
+<TD>Last modified on Mon Apr 04 14:53:29 2016 by hak
+</TD></tr>
+</TABLE>
+
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+
+%<SPAN STYLE="COLOR:RED"><STRONG>package</STRONG></SPAN> hlt.regx
+
+%<SPAN STYLE="COLOR:RED"><STRONG>import</STRONG></SPAN> java.util.<SPAN STYLE="COLOR:#4400DD">HashMap</SPAN>
+%<SPAN STYLE="COLOR:RED"><STRONG>import</STRONG></SPAN> hlt.language.util.*
+%<SPAN STYLE="COLOR:RED"><STRONG>import</STRONG></SPAN> hlt.language.tools.<SPAN STYLE="COLOR:#4400DD">Misc</SPAN>
+
+%access <SPAN STYLE="COLOR:MAGENTA"><STRONG>public</STRONG></SPAN>
+
+%start <SPAN STYLE="COLOR:#4400DD">Session</SPAN>
+
+%root  <SPAN STYLE="COLOR:#4400DD">RegularExpression</SPAN>
+%root  <SPAN STYLE="COLOR:#4400DD">Definition</SPAN>
+
+%token <SPAN STYLE="COLOR:GREEN">IDENTIFIER</SPAN> <SPAN STYLE="COLOR:GREEN">NUMBER</SPAN>	<SPAN STYLE="COLOR:WHITE"><EM>// symbols and numbers are of least prec.
+</EM></SPAN>%right  <SPAN STYLE="COLOR:GREEN"><EM>'|'</EM></SPAN>			<SPAN STYLE="COLOR:WHITE"><EM>// choice is infix right assoc. or lesser prec. than concat.
+</EM></SPAN>%right  <SPAN STYLE="COLOR:GREEN"><EM>'.'</EM></SPAN>			<SPAN STYLE="COLOR:WHITE"><EM>// concat. is infix right assoc. or lesser prec. than unary ops.
+</EM></SPAN>%left  <SPAN STYLE="COLOR:GREEN"><EM>'?'</EM></SPAN> <SPAN STYLE="COLOR:GREEN"><EM>'+'</EM></SPAN> <SPAN STYLE="COLOR:GREEN"><EM>'*'</EM></SPAN> <SPAN STYLE="COLOR:GREEN"><EM>'_'</EM></SPAN> <SPAN STYLE="COLOR:GREEN"><EM>'^'</EM></SPAN>	<SPAN STYLE="COLOR:WHITE"><EM>// all unary operators are left assoc. of same highest prec.
+</EM></SPAN>
+%<SPAN STYLE="COLOR:GRAY">{</SPAN>
+  <SPAN STYLE="COLOR:BLUE"><STRONG>void</STRONG></SPAN> p <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      <SPAN STYLE="COLOR:#4400DD">System</SPAN>.out.println<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  <SPAN STYLE="COLOR:BLUE"><STRONG>void</STRONG></SPAN> p <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">String</SPAN> s<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      <SPAN STYLE="COLOR:#4400DD">System</SPAN>.out.println<SPAN STYLE="COLOR:GRAY">(</SPAN>s<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  <SPAN STYLE="COLOR:BLUE"><STRONG>void</STRONG></SPAN> help <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      p<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      p<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"Enter one of the following ending with a ';':"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      p<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      p<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"- a regular expression to normalize - e.g., '(a|b).()'"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      p<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"- a definition: 'Variable = expression' - e.g., 'Foo = a|b'"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      p<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"- 'syntax' to have a syntax summary"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;      
+      p<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"- 'trace' to toggle tracing"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;      
+      p<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"- 'help' to print these lines"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;      
+      p<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"- 'quit' to quit"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      p<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      <SPAN STYLE="COLOR:#4400DD">Tokenizer</SPAN>.prompt<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  <SPAN STYLE="COLOR:BLUE"><STRONG>void</STRONG></SPAN> syntax <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      p<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      p<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"REGULAR EXPRESSION SYNTAX SUMMARY:"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      p<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"----------------------------------"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      p<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      p<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"CATEGORY        KIND:   DESCRIPTION                    - EXAMPLE"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      p<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"--------        -----   -----------                    - -------"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      p<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"Empty           symbol: ()"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      p<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"Alphabet        symbol: lowercase-start identifier     - a, foo, bAR"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      p<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"Variable        symbol: capitalized identifier         - A, Foo, BAR"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      p<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"Choice          bin-op: infix   '|'    (X or Y)        - a | b"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      p<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"Concat          bin-op: infix   '.'    (X then Y)      - a . b"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      p<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"Option          mon-op: postfix '?'    (zero or one)   - a?"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      p<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"Plus            mon-op: postfix '+'    (one or more)   - a+"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      p<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"Star            mon-op: postfix '*'    (zero or more)  - a*"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      p<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"Power           mon-op: postfix '^n'   (exactly n)     - a^2"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      p<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"Bounded range   mon-op: postfix '_m^n' ('|' of m to n) - a_1^3"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      p<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"Unbounded range mon-op: postfix '_n~'  (at least n)    - a_2~"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      p<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      p<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"'|' has less precedence than '.'"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      p<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"'.' has less precedence than '?', '+', '*', '_', or '^'"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      p<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"'|' and '.' associate to the right"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      p<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"'?', '+', '*', '_', and '^' associate to the left"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      p<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"use parentheses to enforce precedence"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      p<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      <SPAN STYLE="COLOR:#4400DD">Tokenizer</SPAN>.prompt<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+    The definition store. It associates a <a
+    href="../../../../../../doc/hlt/code/language/util/RegExp.html">
+    <tt>RegExp</tt></a> <tt>E</tt> to a <a
+    href="../../../../../../doc/hlt/code/language/util/RegExpSymbol.html">
+    <tt>RegExpSymbol</tt></a> <tt>s</tt>, which is henceforth
+    interpreted as <tt>E</tt> wherever it occurs, <font
+    color="red"><u><i>including in <tt>E</tt> itself!</i></u></font>.
+   
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+  <SPAN STYLE="COLOR:#4400DD">HashMap</SPAN> defs = <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">HashMap</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+%<SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+%nodeprefix <SPAN STYLE="COLOR:GREEN"><EM>""</EM></SPAN>
+%nodesuffix <SPAN STYLE="COLOR:GREEN"><EM>""</EM></SPAN>
+
+%nodeclass <SPAN STYLE="COLOR:MAGENTA"><STRONG>public</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Definition</SPAN>
+  <SPAN STYLE="COLOR:GRAY">{</SPAN>
+    <SPAN STYLE="COLOR:MAGENTA"><STRONG>private</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">String</SPAN> message;
+
+    <SPAN STYLE="COLOR:MAGENTA"><STRONG>public</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">String</SPAN> getMessage <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+      <SPAN STYLE="COLOR:GRAY">{</SPAN>
+	<SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN> message;
+      <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+    <SPAN STYLE="COLOR:MAGENTA"><STRONG>public</STRONG></SPAN> <SPAN STYLE="COLOR:BLUE"><STRONG>void</STRONG></SPAN> setMessage <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">String</SPAN> msg<SPAN STYLE="COLOR:GRAY">)</SPAN>
+      <SPAN STYLE="COLOR:GRAY">{</SPAN>
+	message = msg;
+      <SPAN STYLE="COLOR:GRAY">}</SPAN>
+  <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+%nodeclass <SPAN STYLE="COLOR:MAGENTA"><STRONG>public</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">RegularExpression</SPAN>
+  <SPAN STYLE="COLOR:GRAY">{</SPAN>
+    <SPAN STYLE="COLOR:MAGENTA"><STRONG>private</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">RegExp</SPAN> expression;
+
+    <SPAN STYLE="COLOR:MAGENTA"><STRONG>public</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">RegExp</SPAN> getExpression <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+      <SPAN STYLE="COLOR:GRAY">{</SPAN>
+	<SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN> expression;
+      <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+    <SPAN STYLE="COLOR:MAGENTA"><STRONG>public</STRONG></SPAN> <SPAN STYLE="COLOR:BLUE"><STRONG>void</STRONG></SPAN> setExpression <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">RegExp</SPAN> exp<SPAN STYLE="COLOR:GRAY">)</SPAN>
+      <SPAN STYLE="COLOR:GRAY">{</SPAN>
+	expression = exp;
+      <SPAN STYLE="COLOR:GRAY">}</SPAN>
+  <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+%%
+
+<SPAN STYLE="COLOR:#4400DD">Session</SPAN>
+        : <SPAN STYLE="COLOR:#4400DD">Actions</SPAN> <SPAN STYLE="COLOR:#4400DD">Exit_opt</SPAN>
+        ;
+
+<SPAN STYLE="COLOR:#4400DD">Actions</SPAN>
+  	: <SPAN STYLE="COLOR:WHITE"><EM>/* empty */</EM></SPAN>
+        | <SPAN STYLE="COLOR:#4400DD">Actions</SPAN> <SPAN STYLE="COLOR:#4400DD">Action</SPAN>
+        ;
+
+
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+  An action is either a <tt>RegularExpression</tt>, a definition, or an error,
+  followed by a semicolon.
+ 
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+<SPAN STYLE="COLOR:#4400DD">Action</SPAN>
+  	: <SPAN STYLE="COLOR:#4400DD">RegularExpression</SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+	  <SPAN STYLE="COLOR:#4400DD">RegExp</SPAN> exp = $1.getExpression<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+	  <SPAN STYLE="COLOR:#4400DD">RegExp</SPAN> cpy = exp.deepCopy<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+
+	  p<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"        "</EM></SPAN>+<SPAN STYLE="COLOR:#4400DD">Misc</SPAN>.repeat<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#33AA33">30</SPAN>,<SPAN STYLE="COLOR:GREEN"><EM>'='</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+	  p<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"ORIG:   "</EM></SPAN>+cpy<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+	  p<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"        "</EM></SPAN>+<SPAN STYLE="COLOR:#4400DD">Misc</SPAN>.repeat<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#33AA33">30</SPAN>,<SPAN STYLE="COLOR:GREEN"><EM>'-'</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+
+  	  <SPAN STYLE="COLOR:#4400DD">RegExp</SPAN> nrm = exp.normalForm<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+	  p<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"NORM:   "</EM></SPAN>+nrm.toNormalString<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+	  p<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"        "</EM></SPAN>+<SPAN STYLE="COLOR:#4400DD">Misc</SPAN>.repeat<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#33AA33">30</SPAN>,<SPAN STYLE="COLOR:GREEN"><EM>'='</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+
+          <SPAN STYLE="COLOR:#4400DD">Tokenizer</SPAN>.prompt<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+        <SPAN STYLE="COLOR:GRAY">}</SPAN>
+          <SPAN STYLE="COLOR:GREEN"><EM>';'</EM></SPAN>
+        | <SPAN STYLE="COLOR:#4400DD">Definition</SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+          p<SPAN STYLE="COLOR:GRAY">(</SPAN>$1.getMessage<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+          <SPAN STYLE="COLOR:#4400DD">Tokenizer</SPAN>.prompt<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+        <SPAN STYLE="COLOR:GRAY">}</SPAN>
+          <SPAN STYLE="COLOR:GREEN"><EM>';'</EM></SPAN>
+  	| <SPAN STYLE="COLOR:GREEN"><EM>'help'</EM></SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+	  help<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+        <SPAN STYLE="COLOR:GRAY">}</SPAN>
+          <SPAN STYLE="COLOR:GREEN"><EM>';'</EM></SPAN>
+  	| <SPAN STYLE="COLOR:GREEN"><EM>'syntax'</EM></SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+	  syntax<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+        <SPAN STYLE="COLOR:GRAY">}</SPAN>
+          <SPAN STYLE="COLOR:GREEN"><EM>';'</EM></SPAN>
+  	| <SPAN STYLE="COLOR:GREEN"><EM>'trace'</EM></SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+	  p<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"*** Toggling trace ..."</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+	  <SPAN STYLE="COLOR:#4400DD">RegExp</SPAN>.toggleTrace<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+        <SPAN STYLE="COLOR:GRAY">}</SPAN>
+          <SPAN STYLE="COLOR:GREEN"><EM>';'</EM></SPAN>
+	| error
+	<SPAN STYLE="COLOR:GRAY">{</SPAN>
+	  errorManager<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>.reportErrors<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN">true</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+          <SPAN STYLE="COLOR:#4400DD">Tokenizer</SPAN>.prompt<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+	<SPAN STYLE="COLOR:GRAY">}</SPAN> <SPAN STYLE="COLOR:GREEN"><EM>';'</EM></SPAN>
+        ;
+
+
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+  A $RegularExpression$ is one of the following forms:
+ 
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+<SPAN STYLE="COLOR:#4400DD">RegularExpression</SPAN>
+        : 
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+	    The empty $RegularExpression$ is a $RegularExpression$.
+	   
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+          <SPAN STYLE="COLOR:GREEN"><EM>'('</EM></SPAN> <SPAN STYLE="COLOR:GREEN"><EM>')'</EM></SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+	  $$.setExpression<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">RegExpSymbol</SPAN>.<SPAN STYLE="COLOR:GREEN">EMPTY</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+	<SPAN STYLE="COLOR:GRAY">}</SPAN>
+        | 
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+	    An $IDENTIFIER$ is a $RegularExpression$.
+	   
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+          <SPAN STYLE="COLOR:GREEN">IDENTIFIER</SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+	  <SPAN STYLE="COLOR:#4400DD">String</SPAN> name = $1.svalue<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+	  <SPAN STYLE="COLOR:#4400DD">RegExp</SPAN> definition = <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">RegExp</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>defs.get<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">RegExpSymbol</SPAN>.get<SPAN STYLE="COLOR:GRAY">(</SPAN>name<SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+	  <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>definition == <SPAN STYLE="COLOR:GREEN">null</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+	    $$.setExpression<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">RegExpSymbol</SPAN>.get<SPAN STYLE="COLOR:GRAY">(</SPAN>name<SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+	  <SPAN STYLE="COLOR:BROWN"><STRONG>else</STRONG></SPAN>
+	    $$.setExpression<SPAN STYLE="COLOR:GRAY">(</SPAN>definition<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+	<SPAN STYLE="COLOR:GRAY">}</SPAN>
+        | 
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+	    A choice is a $RegularExpression$.
+	   
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+          <SPAN STYLE="COLOR:#4400DD">RegularExpression</SPAN> <SPAN STYLE="COLOR:GREEN"><EM>'|'</EM></SPAN> <SPAN STYLE="COLOR:#4400DD">RegularExpression</SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+	  $$.setExpression<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">RegExpChoice</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN>$1.getExpression<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>,
+					    $3.getExpression<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+	<SPAN STYLE="COLOR:GRAY">}</SPAN>
+        | 
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+	    A sequence is a $RegularExpression$.
+	   
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+          <SPAN STYLE="COLOR:#4400DD">RegularExpression</SPAN> <SPAN STYLE="COLOR:GREEN"><EM>'.'</EM></SPAN> <SPAN STYLE="COLOR:#4400DD">RegularExpression</SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+	  $$.setExpression<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">RegExpConcat</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN>$1.getExpression<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>,
+					    $3.getExpression<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+	<SPAN STYLE="COLOR:GRAY">}</SPAN>
+        | 
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+	    An option is a $RegularExpression$.
+	   
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+          <SPAN STYLE="COLOR:#4400DD">RegularExpression</SPAN> <SPAN STYLE="COLOR:GREEN"><EM>'?'</EM></SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+	  $$.setExpression<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">RegExpOption</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN>$1.getExpression<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+	<SPAN STYLE="COLOR:GRAY">}</SPAN>
+        | 
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+	    A non-empty infinite iteration is a $RegularExpression$.
+	   
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+          <SPAN STYLE="COLOR:#4400DD">RegularExpression</SPAN> <SPAN STYLE="COLOR:GREEN"><EM>'+'</EM></SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+	  $$.setExpression<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">RegExpPlus</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN>$1.getExpression<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+	<SPAN STYLE="COLOR:GRAY">}</SPAN>
+        | 
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+	    A possibly empty infinite iteration is a $RegularExpression$.
+	   
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+          <SPAN STYLE="COLOR:#4400DD">RegularExpression</SPAN> <SPAN STYLE="COLOR:GREEN"><EM>'*'</EM></SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+	  $$.setExpression<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">RegExpStar</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN>$1.getExpression<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+	<SPAN STYLE="COLOR:GRAY">}</SPAN>
+        | 
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+	    A finite power is a $RegularExpression$.
+	   
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+          <SPAN STYLE="COLOR:#4400DD">RegularExpression</SPAN> <SPAN STYLE="COLOR:GREEN"><EM>'^'</EM></SPAN> <SPAN STYLE="COLOR:GREEN">NUMBER</SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+	  $$.setExpression<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">RegExpPower</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN>$1.getExpression<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>,
+					   <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:BLUE"><STRONG>int</STRONG></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>$3.nvalue<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+	<SPAN STYLE="COLOR:GRAY">}</SPAN>
+        | 
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+	    A finite power range is a $RegularExpression$.
+	   
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+          <SPAN STYLE="COLOR:#4400DD">RegularExpression</SPAN> <SPAN STYLE="COLOR:GREEN"><EM>'_'</EM></SPAN> <SPAN STYLE="COLOR:GREEN">NUMBER</SPAN> <SPAN STYLE="COLOR:GREEN"><EM>'^'</EM></SPAN> <SPAN STYLE="COLOR:GREEN">NUMBER</SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+	  $$.setExpression<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">RegExpPowerRange</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN>$1.getExpression<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>,
+						<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:BLUE"><STRONG>int</STRONG></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>$3.nvalue<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>,
+						<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:BLUE"><STRONG>int</STRONG></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>$5.nvalue<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+	<SPAN STYLE="COLOR:GRAY">}</SPAN>
+        | 
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+	    An infinite power range is a $RegularExpression$.
+	   
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+          <SPAN STYLE="COLOR:#4400DD">RegularExpression</SPAN> <SPAN STYLE="COLOR:GREEN"><EM>'_'</EM></SPAN> <SPAN STYLE="COLOR:GREEN">NUMBER</SPAN> <SPAN STYLE="COLOR:GREEN"><EM>'~'</EM></SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+	  $$.setExpression<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">RegExpPowerRange</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN>$1.getExpression<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>,
+						<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:BLUE"><STRONG>int</STRONG></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>$3.nvalue<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+	<SPAN STYLE="COLOR:GRAY">}</SPAN>
+        | 
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+	    A parenthesized $RegularExpression$ is a $RegularExpression$.
+	   
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+          <SPAN STYLE="COLOR:GREEN"><EM>'('</EM></SPAN> <SPAN STYLE="COLOR:#4400DD">RegularExpression</SPAN> <SPAN STYLE="COLOR:GREEN"><EM>')'</EM></SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+	  $$.setExpression<SPAN STYLE="COLOR:GRAY">(</SPAN>$2.getExpression<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+	<SPAN STYLE="COLOR:GRAY">}</SPAN>
+        ;
+
+
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+  A $Definition$ stores the value of a $RegularExpression$ as an identifier.
+ 
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+<SPAN STYLE="COLOR:#4400DD">Definition</SPAN>
+        : <SPAN STYLE="COLOR:GREEN">IDENTIFIER</SPAN> <SPAN STYLE="COLOR:GREEN"><EM>'='</EM></SPAN> <SPAN STYLE="COLOR:#4400DD">RegularExpression</SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+	  <SPAN STYLE="COLOR:#4400DD">String</SPAN> name = $1.svalue<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+	  <SPAN STYLE="COLOR:#4400DD">RegExp</SPAN> definition = $3.getExpression<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+          defs.put<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">RegExpSymbol</SPAN>.get<SPAN STYLE="COLOR:GRAY">(</SPAN>name<SPAN STYLE="COLOR:GRAY">)</SPAN>,definition<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+          $$.setMessage<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"Defined: "</EM></SPAN>+name+<SPAN STYLE="COLOR:GREEN"><EM>" = "</EM></SPAN>+definition<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+	  $$.setSvalue<SPAN STYLE="COLOR:GRAY">(</SPAN>name<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+        <SPAN STYLE="COLOR:GRAY">}</SPAN>
+        ;
+
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+  Action for quitting the session.
+ 
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+<SPAN STYLE="COLOR:#4400DD">Exit</SPAN>
+  	: <SPAN STYLE="COLOR:GREEN"><EM>'quit'</EM></SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+	  p<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"Bye bye!..."</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+	  <SPAN STYLE="COLOR:#4400DD">System</SPAN>.exit<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#33AA33">0</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+	<SPAN STYLE="COLOR:GRAY">}</SPAN> <SPAN STYLE="COLOR:GREEN"><EM>';'</EM></SPAN>
+	;
+
+<SPAN STYLE="COLOR:#4400DD">Exit_opt</SPAN>
+        : <SPAN STYLE="COLOR:WHITE"><EM>/* empty */</EM></SPAN>
+        | <SPAN STYLE="COLOR:#4400DD">Exit</SPAN>
+	;
+
+%%
+
+</PRE>
+<P>
+<HR>
+<P ALIGN="RIGHT"><SPAN STYLE="COLOR:#F07070"><EM>
+This file was generated on Mon Mar 26 09:24:52 CEST 2018 from file <SPAN STYLE="COLOR:BROWN"><KBD>RegExp.grm</KBD></SPAN><BR>by the <SPAN STYLE="COLOR:BROWN"><KBD>hlt.language.tools.Hilite</KBD></SPAN> Java tool written by <A HREF="mailto:hak@acm.org">Hassan A&iuml;t-Kaci</A></EM></SPAN>
+<P>
+<HR>
+</BODY>
+</HTML>

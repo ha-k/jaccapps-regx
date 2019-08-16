@@ -1,0 +1,328 @@
+// FILE. . . . . /home/hak/hlt/src/hlt/language/jaccapps/regx/sources/RegExp.grm
+// EDIT BY . . . Hassan Ait-Kaci
+// ON MACHINE. . Hp-Dv7
+// STARTED ON. . Thu Oct 18 17:16:36 2012
+
+/**
+ * This is a grammar for defining regular expressions and simplifying
+ * them.  It implements an interactive regular expression parser and
+ * normalizer. One enters a regular expression, or a definition
+ * associating a regular expression to an indentifier, and it is parsed
+ * and, if syntactically correct, it is normalized and its normal form
+ * is printed back.
+ *
+ * <p>
+ * 
+ * <font size="-1" color="red"><tt>[See also the <a
+ * href="index.html">grammar source files</a>]</tt></font>
+ *
+ * <p>
+ * 
+ * @version     Last modified on Mon Apr 04 14:53:29 2016 by hak
+ * @author      <a href="mailto:hak@acm.org">Hassan A&iuml;t-Kaci</a>
+ * @copyright   &copy; <a href="http://www.hassan-ait-kaci.net/">by the author</a>
+ */
+
+%package hlt.regx
+
+%import java.util.HashMap
+%import hlt.language.util.*
+%import hlt.language.tools.Misc
+
+%access public
+
+%start Session
+
+%root  RegularExpression
+%root  Definition
+
+%token IDENTIFIER NUMBER	// symbols and numbers are of least prec.
+%right  '|'			// choice is infix right assoc. or lesser prec. than concat.
+%right  '.'			// concat. is infix right assoc. or lesser prec. than unary ops.
+%left  '?' '+' '*' '_' '^'	// all unary operators are left assoc. of same highest prec.
+
+%{
+  void p ()
+    {
+      System.out.println();
+    }
+
+  void p (String s)
+    {
+      System.out.println(s);
+    }
+
+  void help ()
+    {
+      p();
+      p("Enter one of the following ending with a ';':");
+      p();
+      p("- a regular expression to normalize - e.g., '(a|b).()'");
+      p("- a definition: 'Variable = expression' - e.g., 'Foo = a|b'");
+      p("- 'syntax' to have a syntax summary");      
+      p("- 'trace' to toggle tracing");      
+      p("- 'help' to print these lines");      
+      p("- 'quit' to quit");
+      p();
+      Tokenizer.prompt();
+    }
+
+  void syntax ()
+    {
+      p();
+      p("REGULAR EXPRESSION SYNTAX SUMMARY:");
+      p("----------------------------------");
+      p();
+      p("CATEGORY        KIND:   DESCRIPTION                    - EXAMPLE");
+      p("--------        -----   -----------                    - -------");
+      p("Empty           symbol: ()");
+      p("Alphabet        symbol: lowercase-start identifier     - a, foo, bAR");
+      p("Variable        symbol: capitalized identifier         - A, Foo, BAR");
+      p("Choice          bin-op: infix   '|'    (X or Y)        - a | b");
+      p("Concat          bin-op: infix   '.'    (X then Y)      - a . b");
+      p("Option          mon-op: postfix '?'    (zero or one)   - a?");
+      p("Plus            mon-op: postfix '+'    (one or more)   - a+");
+      p("Star            mon-op: postfix '*'    (zero or more)  - a*");
+      p("Power           mon-op: postfix '^n'   (exactly n)     - a^2");
+      p("Bounded range   mon-op: postfix '_m^n' ('|' of m to n) - a_1^3");
+      p("Unbounded range mon-op: postfix '_n~'  (at least n)    - a_2~");
+      p();
+      p("'|' has less precedence than '.'");
+      p("'.' has less precedence than '?', '+', '*', '_', or '^'");
+      p("'|' and '.' associate to the right");
+      p("'?', '+', '*', '_', and '^' associate to the left");
+      p("use parentheses to enforce precedence");
+      p();
+      Tokenizer.prompt();
+    }
+
+  /**
+   * The definition store. It associates a <a
+   * href="../../../../../../doc/hlt/code/language/util/RegExp.html">
+   * <tt>RegExp</tt></a> <tt>E</tt> to a <a
+   * href="../../../../../../doc/hlt/code/language/util/RegExpSymbol.html">
+   * <tt>RegExpSymbol</tt></a> <tt>s</tt>, which is henceforth
+   * interpreted as <tt>E</tt> wherever it occurs, <font
+   * color="red"><u><i>including in <tt>E</tt> itself!</i></u></font>.
+   */
+  HashMap defs = new HashMap();
+%}
+
+%nodeprefix ""
+%nodesuffix ""
+
+%nodeclass public Definition
+  {
+    private String message;
+
+    public String getMessage ()
+      {
+	return message;
+      }
+
+    public void setMessage (String msg)
+      {
+	message = msg;
+      }
+  }
+
+%nodeclass public RegularExpression
+  {
+    private RegExp expression;
+
+    public RegExp getExpression ()
+      {
+	return expression;
+      }
+
+    public void setExpression (RegExp exp)
+      {
+	expression = exp;
+      }
+  }
+
+%%
+
+Session
+        : Actions Exit_opt
+        ;
+
+Actions
+  	: /* empty */
+        | Actions Action
+        ;
+
+/**
+ * An action is either a <tt>RegularExpression</tt>, a definition, or an error,
+ * followed by a semicolon.
+ */
+Action
+  	: RegularExpression
+        {
+	  RegExp exp = $1.getExpression();
+	  RegExp cpy = exp.deepCopy();
+
+	  p("        "+Misc.repeat(30,'='));
+	  p("ORIG:   "+cpy);
+	  p("        "+Misc.repeat(30,'-'));
+
+  	  RegExp nrm = exp.normalForm();
+	  p("NORM:   "+nrm.toNormalString());
+	  p("        "+Misc.repeat(30,'='));
+
+          Tokenizer.prompt();
+        }
+          ';'
+        | Definition
+        {
+          p($1.getMessage());
+          Tokenizer.prompt();
+        }
+          ';'
+  	| 'help'
+        {
+	  help();
+        }
+          ';'
+  	| 'syntax'
+        {
+	  syntax();
+        }
+          ';'
+  	| 'trace'
+        {
+	  p("*** Toggling trace ...");
+	  RegExp.toggleTrace();
+        }
+          ';'
+	| error
+	{
+	  errorManager().reportErrors(true);
+          Tokenizer.prompt();
+	} ';'
+        ;
+
+/**
+ * A $RegularExpression$ is one of the following forms:
+ */
+RegularExpression
+        : /**
+	   * The empty $RegularExpression$ is a $RegularExpression$.
+	   */
+          '(' ')'
+        {
+	  $$.setExpression(RegExpSymbol.EMPTY);
+	}
+        | /**
+	   * An $IDENTIFIER$ is a $RegularExpression$.
+	   */
+          IDENTIFIER
+        {
+	  String name = $1.svalue();
+	  RegExp definition = (RegExp)defs.get(RegExpSymbol.get(name));
+	  if (definition == null)
+	    $$.setExpression(RegExpSymbol.get(name));
+	  else
+	    $$.setExpression(definition);
+	}
+        | /**
+	   * A choice is a $RegularExpression$.
+	   */
+          RegularExpression '|' RegularExpression
+        {
+	  $$.setExpression(new RegExpChoice($1.getExpression(),
+					    $3.getExpression()));
+	}
+        | /**
+	   * A sequence is a $RegularExpression$.
+	   */
+          RegularExpression '.' RegularExpression
+        {
+	  $$.setExpression(new RegExpConcat($1.getExpression(),
+					    $3.getExpression()));
+	}
+        | /**
+	   * An option is a $RegularExpression$.
+	   */
+          RegularExpression '?'
+        {
+	  $$.setExpression(new RegExpOption($1.getExpression()));
+	}
+        | /**
+	   * A non-empty infinite iteration is a $RegularExpression$.
+	   */
+          RegularExpression '+'
+        {
+	  $$.setExpression(new RegExpPlus($1.getExpression()));
+	}
+        | /**
+	   * A possibly empty infinite iteration is a $RegularExpression$.
+	   */
+          RegularExpression '*'
+        {
+	  $$.setExpression(new RegExpStar($1.getExpression()));
+	}
+        | /**
+	   * A finite power is a $RegularExpression$.
+	   */
+          RegularExpression '^' NUMBER
+        {
+	  $$.setExpression(new RegExpPower($1.getExpression(),
+					   (int)$3.nvalue()));
+	}
+        | /**
+	   * A finite power range is a $RegularExpression$.
+	   */
+          RegularExpression '_' NUMBER '^' NUMBER
+        {
+	  $$.setExpression(new RegExpPowerRange($1.getExpression(),
+						(int)$3.nvalue(),
+						(int)$5.nvalue()));
+	}
+        | /**
+	   * An infinite power range is a $RegularExpression$.
+	   */
+          RegularExpression '_' NUMBER '~'
+        {
+	  $$.setExpression(new RegExpPowerRange($1.getExpression(),
+						(int)$3.nvalue()));
+	}
+        | /**
+	   * A parenthesized $RegularExpression$ is a $RegularExpression$.
+	   */
+          '(' RegularExpression ')'
+        {
+	  $$.setExpression($2.getExpression());
+	}
+        ;
+
+/**
+ * A $Definition$ stores the value of a $RegularExpression$ as an identifier.
+ */
+Definition
+        : IDENTIFIER '=' RegularExpression
+        {
+	  String name = $1.svalue();
+	  RegExp definition = $3.getExpression();
+          defs.put(RegExpSymbol.get(name),definition);
+          $$.setMessage("Defined: "+name+" = "+definition);
+	  $$.setSvalue(name);
+        }
+        ;
+/**
+ * Action for quitting the session.
+ */
+Exit
+  	: 'quit'
+        {
+	  p("Bye bye!...");
+	  System.exit(0);
+	} ';'
+	;
+
+Exit_opt
+        : /* empty */
+        | Exit
+	;
+
+%%

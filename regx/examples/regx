@@ -1,0 +1,2 @@
+#/bin/sh
+java -classpath "../classes;E:/hak/hlt/classes;E:/hak/hlt/classes/jdom.jar" hlt.regx.Main $*

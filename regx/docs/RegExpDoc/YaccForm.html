@@ -1,0 +1,76 @@
+<HTML>
+<HEAD>
+<LINK REL="STYLESHEET" TYPE="text/css" HREF="style.css">
+<SCRIPT LANGUAGE="JavaScript" SRC="script.jvs"></SCRIPT>
+<TITLE>
+Yacc Form of grammar RegExp.grm
+</TITLE>
+</HEAD>
+<BODY CLASS="MAIN"  LINK="BLUE" VLINK="BLUE" ALINK="PURPLE">
+<H1 ALIGN="CENTER">Yacc Form of grammar <SPAN STYLE="COLOR:MAROON">RegExp.grm</SPAN></H1>
+<CENTER>
+<HR>
+<SPAN STYLE="COLOR:#F07070; FONT-SIZE:X-SMALL"><B>Copyright &copy; 2018 by <A HREF="http://www.hassan-ait-kaci.net/">Hassan A&iuml;t-Kaci</A>; All Rights Reserved.</B></SPAN>
+<P>
+<SPAN STYLE="COLOR:#F00770; FONT-SIZE:XX-SMALL"">
+This yacc grammar was generated on Mon Mar 26 09:24:51 CEST 2018 from the annotated Jacc grammar file <SPAN STYLE="COLOR:BROWN"><TT>RegExp.grm</TT></SPAN>.
+<HR><P>
+<TABLE BGCOLOR="WHITE" BORDER="5" CELLPADDING="20">
+<TR><TD>
+<PRE>
+<A CLASS="SYMBOL" NAME="Session"></A><A CLASS="SYMBOL" HREF="RegExp_NT_02.html" TARGET="MAIN" ONCLICK="opener.focus()"><B><TT><I>Session</I></TT></B></A>
+	: <A CLASS="SYMBOL" HREF="#Actions">Actions</A> <A CLASS="SYMBOL" HREF="#Exit_opt">Exit_opt</A> 
+	;
+
+<A CLASS="SYMBOL" NAME="Actions"></A><A CLASS="SYMBOL" HREF="RegExp_NT_05.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><I>Actions</I></TT></A>
+	: <SPAN STYLE="COLOR:ORANGE">/* empty */</SPAN>
+	| <A CLASS="SYMBOL" HREF="#Actions">Actions</A> <A CLASS="SYMBOL" HREF="#Action">Action</A> 
+	;
+
+<A CLASS="SYMBOL" NAME="Action"></A><A CLASS="SYMBOL" HREF="RegExp_NT_07.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><I>Action</I></TT></A>
+	: <A CLASS="SYMBOL" HREF="#RegularExpression">RegularExpression</A> '<A CLASS="SYMBOL" HREF="RegExp_TT_15.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><B>;</B></TT></A>' 
+	| <A CLASS="SYMBOL" HREF="#Definition">Definition</A> '<A CLASS="SYMBOL" HREF="RegExp_TT_15.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><B>;</B></TT></A>' 
+	| '<A CLASS="SYMBOL" HREF="RegExp_TT_16.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><B>help</B></TT></A>' '<A CLASS="SYMBOL" HREF="RegExp_TT_15.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><B>;</B></TT></A>' 
+	| '<A CLASS="SYMBOL" HREF="RegExp_TT_17.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><B>syntax</B></TT></A>' '<A CLASS="SYMBOL" HREF="RegExp_TT_15.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><B>;</B></TT></A>' 
+	| '<A CLASS="SYMBOL" HREF="RegExp_TT_18.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><B>trace</B></TT></A>' '<A CLASS="SYMBOL" HREF="RegExp_TT_15.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><B>;</B></TT></A>' 
+	| <B><SPAN STYLE="COLOR:#4444FF">error</SPAN></B> '<A CLASS="SYMBOL" HREF="RegExp_TT_15.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><B>;</B></TT></A>' 
+	;
+
+<A CLASS="SYMBOL" NAME="RegularExpression"></A><A CLASS="SYMBOL" HREF="RegExp_NT_03.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><I>RegularExpression</I></TT></A>
+	<A CLASS="SYMBOL" HREF="javascript:showRuleDoc('RegExp_GR_20')">:</A> '<A CLASS="SYMBOL" HREF="RegExp_TT_19.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><B>(</B></TT></A>' '<A CLASS="SYMBOL" HREF="RegExp_TT_20.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><B>)</B></TT></A>' 
+	<A CLASS="SYMBOL" HREF="javascript:showRuleDoc('RegExp_GR_21')">|</A> <A CLASS="SYMBOL" HREF="RegExp_TT_06.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><B>IDENTIFIER</B></TT></A> 
+	<A CLASS="SYMBOL" HREF="javascript:showRuleDoc('RegExp_GR_22')">|</A> <A CLASS="SYMBOL" HREF="#RegularExpression">RegularExpression</A> '<A CLASS="SYMBOL" HREF="RegExp_TT_08.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><B>|</B></TT></A>' <A CLASS="SYMBOL" HREF="#RegularExpression">RegularExpression</A> 
+	<A CLASS="SYMBOL" HREF="javascript:showRuleDoc('RegExp_GR_23')">|</A> <A CLASS="SYMBOL" HREF="#RegularExpression">RegularExpression</A> '<A CLASS="SYMBOL" HREF="RegExp_TT_09.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><B>.</B></TT></A>' <A CLASS="SYMBOL" HREF="#RegularExpression">RegularExpression</A> 
+	<A CLASS="SYMBOL" HREF="javascript:showRuleDoc('RegExp_GR_24')">|</A> <A CLASS="SYMBOL" HREF="#RegularExpression">RegularExpression</A> '<A CLASS="SYMBOL" HREF="RegExp_TT_10.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><B>?</B></TT></A>' 
+	<A CLASS="SYMBOL" HREF="javascript:showRuleDoc('RegExp_GR_25')">|</A> <A CLASS="SYMBOL" HREF="#RegularExpression">RegularExpression</A> '<A CLASS="SYMBOL" HREF="RegExp_TT_11.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><B>+</B></TT></A>' 
+	<A CLASS="SYMBOL" HREF="javascript:showRuleDoc('RegExp_GR_26')">|</A> <A CLASS="SYMBOL" HREF="#RegularExpression">RegularExpression</A> '<A CLASS="SYMBOL" HREF="RegExp_TT_12.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><B>*</B></TT></A>' 
+	<A CLASS="SYMBOL" HREF="javascript:showRuleDoc('RegExp_GR_27')">|</A> <A CLASS="SYMBOL" HREF="#RegularExpression">RegularExpression</A> '<A CLASS="SYMBOL" HREF="RegExp_TT_14.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><B>^</B></TT></A>' <A CLASS="SYMBOL" HREF="RegExp_TT_07.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><B>NUMBER</B></TT></A> 
+	<A CLASS="SYMBOL" HREF="javascript:showRuleDoc('RegExp_GR_28')">|</A> <A CLASS="SYMBOL" HREF="#RegularExpression">RegularExpression</A> '<A CLASS="SYMBOL" HREF="RegExp_TT_13.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><B>_</B></TT></A>' <A CLASS="SYMBOL" HREF="RegExp_TT_07.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><B>NUMBER</B></TT></A> '<A CLASS="SYMBOL" HREF="RegExp_TT_14.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><B>^</B></TT></A>' <A CLASS="SYMBOL" HREF="RegExp_TT_07.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><B>NUMBER</B></TT></A> 
+	<A CLASS="SYMBOL" HREF="javascript:showRuleDoc('RegExp_GR_29')">|</A> <A CLASS="SYMBOL" HREF="#RegularExpression">RegularExpression</A> '<A CLASS="SYMBOL" HREF="RegExp_TT_13.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><B>_</B></TT></A>' <A CLASS="SYMBOL" HREF="RegExp_TT_07.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><B>NUMBER</B></TT></A> '<A CLASS="SYMBOL" HREF="RegExp_TT_21.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><B>~</B></TT></A>' 
+	<A CLASS="SYMBOL" HREF="javascript:showRuleDoc('RegExp_GR_30')">|</A> '<A CLASS="SYMBOL" HREF="RegExp_TT_19.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><B>(</B></TT></A>' <A CLASS="SYMBOL" HREF="#RegularExpression">RegularExpression</A> '<A CLASS="SYMBOL" HREF="RegExp_TT_20.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><B>)</B></TT></A>' 
+	;
+
+<A CLASS="SYMBOL" NAME="Definition"></A><A CLASS="SYMBOL" HREF="RegExp_NT_04.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><I>Definition</I></TT></A>
+	: <A CLASS="SYMBOL" HREF="RegExp_TT_06.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><B>IDENTIFIER</B></TT></A> '<A CLASS="SYMBOL" HREF="RegExp_TT_22.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><B>=</B></TT></A>' <A CLASS="SYMBOL" HREF="#RegularExpression">RegularExpression</A> 
+	;
+
+<A CLASS="SYMBOL" NAME="Exit"></A><A CLASS="SYMBOL" HREF="RegExp_NT_14.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><I>Exit</I></TT></A>
+	: '<A CLASS="SYMBOL" HREF="RegExp_TT_23.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><B>quit</B></TT></A>' '<A CLASS="SYMBOL" HREF="RegExp_TT_15.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><B>;</B></TT></A>' 
+	;
+
+<A CLASS="SYMBOL" NAME="Exit_opt"></A><A CLASS="SYMBOL" HREF="RegExp_NT_06.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><I>Exit_opt</I></TT></A>
+	: <SPAN STYLE="COLOR:ORANGE">/* empty */</SPAN>
+	| <A CLASS="SYMBOL" HREF="#Exit">Exit</A> 
+	;
+
+</PRE>
+</TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<HR>
+<SPAN STYLE="COLOR:#F07070; FONT-SIZE:XX-SMALL">
+<P ALIGN="RIGHT"><B>Copyright &copy; 2018 by <A HREF="http://www.hassan-ait-kaci.net/">Hassan A&iuml;t-Kaci</A>; All Rights Reserved.</B></SPAN>
+<P ALIGN="RIGHT"><IMG ALIGN="MIDDLE" SRC="images/hlt/hlt-logo.gif" WIDTH="90" HEIGHT="90">
+</BODY>
+</HTML>

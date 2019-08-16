@@ -1,0 +1,1192 @@
+*** This is Jacc: Just another compiler compiler... 
+*** Run of Mon Mar 26 09:24:53 CEST 2018
+*** Reading grammar in file ./sources/RegExp.grm ... 
+***	... in 13 ms
+
+RULES:
+
+[0]	$START$ --> $ROOTS$
+	precedence = 1
+[1]	$ROOTS$ --> Session
+	precedence = 1
+[2]	$ROOTS$ --> '$Session_switch$' Session
+	precedence = 1
+[3]	$ROOTS$ --> '$RegularExpression_switch$' RegularExpression
+	precedence = 1
+[4]	$ROOTS$ --> '$Definition_switch$' Definition
+	precedence = 1
+[5]	Session --> Actions Exit_opt
+	precedence = 1
+[6]	Actions -->
+	precedence = 1
+[7]	Actions --> Actions Action
+	precedence = 1
+[8]	$ACTION0$ -->
+	precedence = 1
+[9]	Action --> RegularExpression $ACTION0$ ';'
+	precedence = 1
+[10]	$ACTION1$ -->
+	precedence = 1
+[11]	Action --> Definition $ACTION1$ ';'
+	precedence = 1
+[12]	$ACTION2$ -->
+	precedence = 1
+[13]	Action --> 'help' $ACTION2$ ';'
+	precedence = 1
+[14]	$ACTION3$ -->
+	precedence = 1
+[15]	Action --> 'syntax' $ACTION3$ ';'
+	precedence = 1
+[16]	$ACTION4$ -->
+	precedence = 1
+[17]	Action --> 'trace' $ACTION4$ ';'
+	precedence = 1
+[18]	$ACTION5$ -->
+	precedence = 1
+[19]	Action --> 'error' $ACTION5$ ';'
+	precedence = 1
+[20]	RegularExpression --> '(' ')'
+	precedence = 1
+[21]	RegularExpression --> 'IDENTIFIER'
+	precedence = 1
+[22]	RegularExpression --> RegularExpression '|' RegularExpression
+	precedence = 11
+[23]	RegularExpression --> RegularExpression '.' RegularExpression
+	precedence = 21
+[24]	RegularExpression --> RegularExpression '?'
+	precedence = 31
+[25]	RegularExpression --> RegularExpression '+'
+	precedence = 31
+[26]	RegularExpression --> RegularExpression '*'
+	precedence = 31
+[27]	RegularExpression --> RegularExpression '^' 'NUMBER'
+	precedence = 1
+[28]	RegularExpression --> RegularExpression '_' 'NUMBER' '^' 'NUMBER'
+	precedence = 1
+[29]	RegularExpression --> RegularExpression '_' 'NUMBER' '~'
+	precedence = 1
+[30]	RegularExpression --> '(' RegularExpression ')'
+	precedence = 1
+[31]	Definition --> 'IDENTIFIER' '=' RegularExpression
+	precedence = 1
+[32]	$ACTION6$ -->
+	precedence = 1
+[33]	Exit --> 'quit' $ACTION6$ ';'
+	precedence = 1
+[34]	Exit_opt -->
+	precedence = 1
+[35]	Exit_opt --> Exit
+	precedence = 1
+
+*** Starting grammar analysis ... 
+***	Preprocessing the grammar ... 
+***	... in 11 ms
+
+TERMINALS:
+
+	----------	-------------	--------
+	PRECEDENCE	ASSOCIATIVITY	TERMINAL
+	----------	-------------	--------
+[0]	1		none		'$EMPTY$'
+[1]	1		none		'$E_O_I$'
+[2]	1		none		'error'
+[3]	1		none		'$Session_switch$'
+[4]	1		none		'$RegularExpression_switch$'
+[5]	1		none		'$Definition_switch$'
+[6]	1		none		'IDENTIFIER'
+[7]	1		none		'NUMBER'
+[8]	11		right		'|'
+[9]	21		right		'.'
+[10]	31		left		'?'
+[11]	31		left		'+'
+[12]	31		left		'*'
+[13]	31		left		'_'
+[14]	31		left		'^'
+[15]	1		none		';'
+[16]	1		none		'help'
+[17]	1		none		'syntax'
+[18]	1		none		'trace'
+[19]	1		none		'('
+[20]	1		none		')'
+[21]	1		none		'~'
+[22]	1		none		'='
+[23]	1		none		'quit'
+	----------------------------------------
+
+NON TERMINALS:
+
+  [0]	$START$	(nullable)
+	FIRST:	 {'error', '$Session_switch$', '$RegularExpression_switch$', '$Definition_switch$', 'IDENTIFIER', 'help', 'syntax', 'trace', '(', 'quit'}
+	LSet:	 {$START$, $ROOTS$, Session, Actions}
+
+  [1]	$ROOTS$	(nullable)
+	FIRST:	 {'error', '$Session_switch$', '$RegularExpression_switch$', '$Definition_switch$', 'IDENTIFIER', 'help', 'syntax', 'trace', '(', 'quit'}
+	LSet:	 {$ROOTS$, Session, Actions}
+
+  [2]	Session	(nullable)
+	FIRST:	 {'error', 'IDENTIFIER', 'help', 'syntax', 'trace', '(', 'quit'}
+	LSet:	 {Session, Actions}
+
+  [3]	RegularExpression
+	FIRST:	 {'IDENTIFIER', '('}
+	LSet:	 {RegularExpression}
+
+  [4]	Definition
+	FIRST:	 {'IDENTIFIER'}
+	LSet:	 {Definition}
+
+  [5]	Actions	(nullable)
+	FIRST:	 {'error', 'IDENTIFIER', 'help', 'syntax', 'trace', '('}
+	LSet:	 {Actions}
+
+  [6]	Exit_opt	(nullable)
+	FIRST:	 {'quit'}
+	LSet:	 {Exit_opt, Exit}
+
+  [7]	Action
+	FIRST:	 {'error', 'IDENTIFIER', 'help', 'syntax', 'trace', '('}
+	LSet:	 {RegularExpression, Definition, Action}
+
+  [8]	$ACTION0$	(nullable)
+	FIRST:	 {}
+	LSet:	 {$ACTION0$}
+
+  [9]	$ACTION1$	(nullable)
+	FIRST:	 {}
+	LSet:	 {$ACTION1$}
+
+  [10]	$ACTION2$	(nullable)
+	FIRST:	 {}
+	LSet:	 {$ACTION2$}
+
+  [11]	$ACTION3$	(nullable)
+	FIRST:	 {}
+	LSet:	 {$ACTION3$}
+
+  [12]	$ACTION4$	(nullable)
+	FIRST:	 {}
+	LSet:	 {$ACTION4$}
+
+  [13]	$ACTION5$	(nullable)
+	FIRST:	 {}
+	LSet:	 {$ACTION5$}
+
+  [14]	Exit
+	FIRST:	 {'quit'}
+	LSet:	 {Exit}
+
+  [15]	$ACTION6$	(nullable)
+	FIRST:	 {}
+	LSet:	 {$ACTION6$}
+
+
+***	Building canonical LR states ... 
+***	 ... in 23 ms
+***	Propagating lookahead symbols ... 
+***	 ... in 2 ms
+*** Grammar analysis completed in 41 ms.
+*** Building parsing tables ... 
+***	... in 2 ms
+
+
+
+=============================
+STATE NUMBER: 0
+=============================
+[0] $START$ --> . $ROOTS$
+	Preceding states: {0}
+	Follow set: {'$E_O_I$'}
+	Preceding states: {0}
+[1] $ROOTS$ --> . Session
+	Preceding states: {0}
+[2] $ROOTS$ --> . '$Session_switch$' Session
+	Preceding states: {0}
+[3] $ROOTS$ --> . '$RegularExpression_switch$' RegularExpression
+	Preceding states: {0}
+[4] $ROOTS$ --> . '$Definition_switch$' Definition
+	Preceding states: {0}
+[5] Session --> . Actions Exit_opt
+	Preceding states: {0}
+[6] Actions --> .
+	Preceding states: {0}
+	Lookahead set: {'$E_O_I$', 'error', 'IDENTIFIER', 'help', 'syntax', 'trace', '(', 'quit'}
+[7] Actions --> . Actions Action
+	Preceding states: {0}
+-----------------------------
+With $ROOTS$, go to state 1
+With Session, go to state 2
+With '$Session_switch$', go to state 3
+With '$RegularExpression_switch$', go to state 4
+With '$Definition_switch$', go to state 5
+With Actions, go to state 6
+
+=============================
+STATE NUMBER: 1
+=============================
+[0] $START$ --> $ROOTS$ .
+	Preceding states: {0}
+	Lookahead set: {}
+-----------------------------
+
+=============================
+STATE NUMBER: 2
+=============================
+[1] $ROOTS$ --> Session .
+	Preceding states: {0}
+	Lookahead set: {'$E_O_I$'}
+-----------------------------
+
+=============================
+STATE NUMBER: 3
+=============================
+[2] $ROOTS$ --> '$Session_switch$' . Session
+	Preceding states: {0}
+	Follow set: {'$E_O_I$'}
+[5] Session --> . Actions Exit_opt
+	Preceding states: {3}
+[6] Actions --> .
+	Preceding states: {3}
+	Lookahead set: {'$E_O_I$', 'error', 'IDENTIFIER', 'help', 'syntax', 'trace', '(', 'quit'}
+[7] Actions --> . Actions Action
+	Preceding states: {3}
+-----------------------------
+With Session, go to state 56
+With Actions, go to state 6
+
+=============================
+STATE NUMBER: 4
+=============================
+[3] $ROOTS$ --> '$RegularExpression_switch$' . RegularExpression
+	Preceding states: {0}
+	Follow set: {'$E_O_I$'}
+[20] RegularExpression --> . '(' ')'
+	Preceding states: {4}
+[21] RegularExpression --> . 'IDENTIFIER'
+	Preceding states: {4}
+[22] RegularExpression --> . RegularExpression '|' RegularExpression
+	Preceding states: {4}
+[23] RegularExpression --> . RegularExpression '.' RegularExpression
+	Preceding states: {4}
+[24] RegularExpression --> . RegularExpression '?'
+	Preceding states: {4}
+[25] RegularExpression --> . RegularExpression '+'
+	Preceding states: {4}
+[26] RegularExpression --> . RegularExpression '*'
+	Preceding states: {4}
+[27] RegularExpression --> . RegularExpression '^' 'NUMBER'
+	Preceding states: {4}
+[28] RegularExpression --> . RegularExpression '_' 'NUMBER' '^' 'NUMBER'
+	Preceding states: {4}
+[29] RegularExpression --> . RegularExpression '_' 'NUMBER' '~'
+	Preceding states: {4}
+[30] RegularExpression --> . '(' RegularExpression ')'
+	Preceding states: {4}
+-----------------------------
+With RegularExpression, go to state 55
+With '(', go to state 11
+With 'IDENTIFIER', go to state 43
+
+=============================
+STATE NUMBER: 5
+=============================
+[4] $ROOTS$ --> '$Definition_switch$' . Definition
+	Preceding states: {0}
+	Follow set: {'$E_O_I$'}
+[31] Definition --> . 'IDENTIFIER' '=' RegularExpression
+	Preceding states: {5}
+-----------------------------
+With Definition, go to state 53
+With 'IDENTIFIER', go to state 54
+
+=============================
+STATE NUMBER: 6
+=============================
+[5] Session --> Actions . Exit_opt
+	Preceding states: {0, 3}
+	Follow set: {'$E_O_I$'}
+[7] Actions --> Actions . Action
+	Preceding states: {0, 3}
+	Follow set: {'$E_O_I$', 'error', 'IDENTIFIER', 'help', 'syntax', 'trace', '(', 'quit'}
+[9] Action --> . RegularExpression $ACTION0$ ';'
+	Preceding states: {6}
+[11] Action --> . Definition $ACTION1$ ';'
+	Preceding states: {6}
+[13] Action --> . 'help' $ACTION2$ ';'
+	Preceding states: {6}
+[15] Action --> . 'syntax' $ACTION3$ ';'
+	Preceding states: {6}
+[17] Action --> . 'trace' $ACTION4$ ';'
+	Preceding states: {6}
+[19] Action --> . 'error' $ACTION5$ ';'
+	Preceding states: {6}
+[20] RegularExpression --> . '(' ')'
+	Preceding states: {6}
+[21] RegularExpression --> . 'IDENTIFIER'
+	Preceding states: {6}
+[22] RegularExpression --> . RegularExpression '|' RegularExpression
+	Preceding states: {6}
+[23] RegularExpression --> . RegularExpression '.' RegularExpression
+	Preceding states: {6}
+[24] RegularExpression --> . RegularExpression '?'
+	Preceding states: {6}
+[25] RegularExpression --> . RegularExpression '+'
+	Preceding states: {6}
+[26] RegularExpression --> . RegularExpression '*'
+	Preceding states: {6}
+[27] RegularExpression --> . RegularExpression '^' 'NUMBER'
+	Preceding states: {6}
+[28] RegularExpression --> . RegularExpression '_' 'NUMBER' '^' 'NUMBER'
+	Preceding states: {6}
+[29] RegularExpression --> . RegularExpression '_' 'NUMBER' '~'
+	Preceding states: {6}
+[30] RegularExpression --> . '(' RegularExpression ')'
+	Preceding states: {6}
+[31] Definition --> . 'IDENTIFIER' '=' RegularExpression
+	Preceding states: {6}
+[33] Exit --> . 'quit' $ACTION6$ ';'
+	Preceding states: {6}
+[34] Exit_opt --> .
+	Preceding states: {6}
+	Lookahead set: {'$E_O_I$'}
+[35] Exit_opt --> . Exit
+	Preceding states: {6}
+-----------------------------
+With Exit_opt, go to state 7
+With Action, go to state 8
+With Exit, go to state 9
+With 'quit', go to state 10
+With '(', go to state 11
+With 'IDENTIFIER', go to state 12
+With RegularExpression, go to state 13
+With Definition, go to state 14
+With 'help', go to state 15
+With 'syntax', go to state 16
+With 'trace', go to state 17
+With 'error', go to state 18
+
+=============================
+STATE NUMBER: 7
+=============================
+[5] Session --> Actions Exit_opt .
+	Preceding states: {0, 3}
+	Lookahead set: {'$E_O_I$'}
+-----------------------------
+
+=============================
+STATE NUMBER: 8
+=============================
+[7] Actions --> Actions Action .
+	Preceding states: {0, 3}
+	Lookahead set: {'$E_O_I$', 'error', 'IDENTIFIER', 'help', 'syntax', 'trace', '(', 'quit'}
+-----------------------------
+
+=============================
+STATE NUMBER: 9
+=============================
+[35] Exit_opt --> Exit .
+	Preceding states: {6}
+	Lookahead set: {'$E_O_I$'}
+-----------------------------
+
+=============================
+STATE NUMBER: 10
+=============================
+[32] $ACTION6$ --> .
+	Preceding states: {10}
+	Lookahead set: {';'}
+[33] Exit --> 'quit' . $ACTION6$ ';'
+	Preceding states: {6}
+	Follow set: {';'}
+-----------------------------
+With $ACTION6$, go to state 51
+
+=============================
+STATE NUMBER: 11
+=============================
+[20] RegularExpression --> . '(' ')'
+	Preceding states: {11}
+[20] RegularExpression --> '(' . ')'
+	Preceding states: {4, 6, 11, 30, 31, 46}
+[21] RegularExpression --> . 'IDENTIFIER'
+	Preceding states: {11}
+[22] RegularExpression --> . RegularExpression '|' RegularExpression
+	Preceding states: {11}
+[23] RegularExpression --> . RegularExpression '.' RegularExpression
+	Preceding states: {11}
+[24] RegularExpression --> . RegularExpression '?'
+	Preceding states: {11}
+[25] RegularExpression --> . RegularExpression '+'
+	Preceding states: {11}
+[26] RegularExpression --> . RegularExpression '*'
+	Preceding states: {11}
+[27] RegularExpression --> . RegularExpression '^' 'NUMBER'
+	Preceding states: {11}
+[28] RegularExpression --> . RegularExpression '_' 'NUMBER' '^' 'NUMBER'
+	Preceding states: {11}
+[29] RegularExpression --> . RegularExpression '_' 'NUMBER' '~'
+	Preceding states: {11}
+[30] RegularExpression --> . '(' RegularExpression ')'
+	Preceding states: {11}
+[30] RegularExpression --> '(' . RegularExpression ')'
+	Preceding states: {4, 6, 11, 30, 31, 46}
+	Follow set: {')'}
+-----------------------------
+With ')', go to state 48
+With RegularExpression, go to state 49
+With '(', go to state 11
+With 'IDENTIFIER', go to state 43
+
+=============================
+STATE NUMBER: 12
+=============================
+[21] RegularExpression --> 'IDENTIFIER' .
+	Preceding states: {6}
+	Lookahead set: {'|', '.', '?', '+', '*', '_', '^', ';'}
+[31] Definition --> 'IDENTIFIER' . '=' RegularExpression
+	Preceding states: {6}
+-----------------------------
+With '=', go to state 46
+
+=============================
+STATE NUMBER: 13
+=============================
+[8] $ACTION0$ --> .
+	Preceding states: {13}
+	Lookahead set: {';'}
+[9] Action --> RegularExpression . $ACTION0$ ';'
+	Preceding states: {6}
+	Follow set: {';'}
+[22] RegularExpression --> RegularExpression . '|' RegularExpression
+	Preceding states: {6}
+[23] RegularExpression --> RegularExpression . '.' RegularExpression
+	Preceding states: {6}
+[24] RegularExpression --> RegularExpression . '?'
+	Preceding states: {6}
+[25] RegularExpression --> RegularExpression . '+'
+	Preceding states: {6}
+[26] RegularExpression --> RegularExpression . '*'
+	Preceding states: {6}
+[27] RegularExpression --> RegularExpression . '^' 'NUMBER'
+	Preceding states: {6}
+[28] RegularExpression --> RegularExpression . '_' 'NUMBER' '^' 'NUMBER'
+	Preceding states: {6}
+[29] RegularExpression --> RegularExpression . '_' 'NUMBER' '~'
+	Preceding states: {6}
+-----------------------------
+With $ACTION0$, go to state 29
+With '|', go to state 30
+With '.', go to state 31
+With '?', go to state 32
+With '+', go to state 33
+With '*', go to state 34
+With '^', go to state 35
+With '_', go to state 36
+
+=============================
+STATE NUMBER: 14
+=============================
+[10] $ACTION1$ --> .
+	Preceding states: {14}
+	Lookahead set: {';'}
+[11] Action --> Definition . $ACTION1$ ';'
+	Preceding states: {6}
+	Follow set: {';'}
+-----------------------------
+With $ACTION1$, go to state 27
+
+=============================
+STATE NUMBER: 15
+=============================
+[12] $ACTION2$ --> .
+	Preceding states: {15}
+	Lookahead set: {';'}
+[13] Action --> 'help' . $ACTION2$ ';'
+	Preceding states: {6}
+	Follow set: {';'}
+-----------------------------
+With $ACTION2$, go to state 25
+
+=============================
+STATE NUMBER: 16
+=============================
+[14] $ACTION3$ --> .
+	Preceding states: {16}
+	Lookahead set: {';'}
+[15] Action --> 'syntax' . $ACTION3$ ';'
+	Preceding states: {6}
+	Follow set: {';'}
+-----------------------------
+With $ACTION3$, go to state 23
+
+=============================
+STATE NUMBER: 17
+=============================
+[16] $ACTION4$ --> .
+	Preceding states: {17}
+	Lookahead set: {';'}
+[17] Action --> 'trace' . $ACTION4$ ';'
+	Preceding states: {6}
+	Follow set: {';'}
+-----------------------------
+With $ACTION4$, go to state 21
+
+=============================
+STATE NUMBER: 18
+=============================
+[18] $ACTION5$ --> .
+	Preceding states: {18}
+	Lookahead set: {';'}
+[19] Action --> 'error' . $ACTION5$ ';'
+	Preceding states: {6}
+	Follow set: {';'}
+-----------------------------
+With $ACTION5$, go to state 19
+
+=============================
+STATE NUMBER: 19
+=============================
+[19] Action --> 'error' $ACTION5$ . ';'
+	Preceding states: {6}
+-----------------------------
+With ';', go to state 20
+
+=============================
+STATE NUMBER: 20
+=============================
+[19] Action --> 'error' $ACTION5$ ';' .
+	Preceding states: {6}
+	Lookahead set: {'$E_O_I$', 'error', 'IDENTIFIER', 'help', 'syntax', 'trace', '(', 'quit'}
+-----------------------------
+
+=============================
+STATE NUMBER: 21
+=============================
+[17] Action --> 'trace' $ACTION4$ . ';'
+	Preceding states: {6}
+-----------------------------
+With ';', go to state 22
+
+=============================
+STATE NUMBER: 22
+=============================
+[17] Action --> 'trace' $ACTION4$ ';' .
+	Preceding states: {6}
+	Lookahead set: {'$E_O_I$', 'error', 'IDENTIFIER', 'help', 'syntax', 'trace', '(', 'quit'}
+-----------------------------
+
+=============================
+STATE NUMBER: 23
+=============================
+[15] Action --> 'syntax' $ACTION3$ . ';'
+	Preceding states: {6}
+-----------------------------
+With ';', go to state 24
+
+=============================
+STATE NUMBER: 24
+=============================
+[15] Action --> 'syntax' $ACTION3$ ';' .
+	Preceding states: {6}
+	Lookahead set: {'$E_O_I$', 'error', 'IDENTIFIER', 'help', 'syntax', 'trace', '(', 'quit'}
+-----------------------------
+
+=============================
+STATE NUMBER: 25
+=============================
+[13] Action --> 'help' $ACTION2$ . ';'
+	Preceding states: {6}
+-----------------------------
+With ';', go to state 26
+
+=============================
+STATE NUMBER: 26
+=============================
+[13] Action --> 'help' $ACTION2$ ';' .
+	Preceding states: {6}
+	Lookahead set: {'$E_O_I$', 'error', 'IDENTIFIER', 'help', 'syntax', 'trace', '(', 'quit'}
+-----------------------------
+
+=============================
+STATE NUMBER: 27
+=============================
+[11] Action --> Definition $ACTION1$ . ';'
+	Preceding states: {6}
+-----------------------------
+With ';', go to state 28
+
+=============================
+STATE NUMBER: 28
+=============================
+[11] Action --> Definition $ACTION1$ ';' .
+	Preceding states: {6}
+	Lookahead set: {'$E_O_I$', 'error', 'IDENTIFIER', 'help', 'syntax', 'trace', '(', 'quit'}
+-----------------------------
+
+=============================
+STATE NUMBER: 29
+=============================
+[9] Action --> RegularExpression $ACTION0$ . ';'
+	Preceding states: {6}
+-----------------------------
+With ';', go to state 45
+
+=============================
+STATE NUMBER: 30
+=============================
+[20] RegularExpression --> . '(' ')'
+	Preceding states: {30}
+[21] RegularExpression --> . 'IDENTIFIER'
+	Preceding states: {30}
+[22] RegularExpression --> . RegularExpression '|' RegularExpression
+	Preceding states: {30}
+[22] RegularExpression --> RegularExpression '|' . RegularExpression
+	Preceding states: {4, 6, 11, 30, 31, 46}
+	Follow set: {'$E_O_I$', '|', '.', '?', '+', '*', '_', '^', ';', ')'}
+[23] RegularExpression --> . RegularExpression '.' RegularExpression
+	Preceding states: {30}
+[24] RegularExpression --> . RegularExpression '?'
+	Preceding states: {30}
+[25] RegularExpression --> . RegularExpression '+'
+	Preceding states: {30}
+[26] RegularExpression --> . RegularExpression '*'
+	Preceding states: {30}
+[27] RegularExpression --> . RegularExpression '^' 'NUMBER'
+	Preceding states: {30}
+[28] RegularExpression --> . RegularExpression '_' 'NUMBER' '^' 'NUMBER'
+	Preceding states: {30}
+[29] RegularExpression --> . RegularExpression '_' 'NUMBER' '~'
+	Preceding states: {30}
+[30] RegularExpression --> . '(' RegularExpression ')'
+	Preceding states: {30}
+-----------------------------
+With RegularExpression, go to state 44
+With '(', go to state 11
+With 'IDENTIFIER', go to state 43
+
+=============================
+STATE NUMBER: 31
+=============================
+[20] RegularExpression --> . '(' ')'
+	Preceding states: {31}
+[21] RegularExpression --> . 'IDENTIFIER'
+	Preceding states: {31}
+[22] RegularExpression --> . RegularExpression '|' RegularExpression
+	Preceding states: {31}
+[23] RegularExpression --> . RegularExpression '.' RegularExpression
+	Preceding states: {31}
+[23] RegularExpression --> RegularExpression '.' . RegularExpression
+	Preceding states: {4, 6, 11, 30, 31, 46}
+	Follow set: {'$E_O_I$', '|', '.', '?', '+', '*', '_', '^', ';', ')'}
+[24] RegularExpression --> . RegularExpression '?'
+	Preceding states: {31}
+[25] RegularExpression --> . RegularExpression '+'
+	Preceding states: {31}
+[26] RegularExpression --> . RegularExpression '*'
+	Preceding states: {31}
+[27] RegularExpression --> . RegularExpression '^' 'NUMBER'
+	Preceding states: {31}
+[28] RegularExpression --> . RegularExpression '_' 'NUMBER' '^' 'NUMBER'
+	Preceding states: {31}
+[29] RegularExpression --> . RegularExpression '_' 'NUMBER' '~'
+	Preceding states: {31}
+[30] RegularExpression --> . '(' RegularExpression ')'
+	Preceding states: {31}
+-----------------------------
+With RegularExpression, go to state 42
+With '(', go to state 11
+With 'IDENTIFIER', go to state 43
+
+=============================
+STATE NUMBER: 32
+=============================
+[24] RegularExpression --> RegularExpression '?' .
+	Preceding states: {4, 6, 11, 30, 31, 46}
+	Lookahead set: {'$E_O_I$', '|', '.', '?', '+', '*', '_', '^', ';', ')'}
+-----------------------------
+
+=============================
+STATE NUMBER: 33
+=============================
+[25] RegularExpression --> RegularExpression '+' .
+	Preceding states: {4, 6, 11, 30, 31, 46}
+	Lookahead set: {'$E_O_I$', '|', '.', '?', '+', '*', '_', '^', ';', ')'}
+-----------------------------
+
+=============================
+STATE NUMBER: 34
+=============================
+[26] RegularExpression --> RegularExpression '*' .
+	Preceding states: {4, 6, 11, 30, 31, 46}
+	Lookahead set: {'$E_O_I$', '|', '.', '?', '+', '*', '_', '^', ';', ')'}
+-----------------------------
+
+=============================
+STATE NUMBER: 35
+=============================
+[27] RegularExpression --> RegularExpression '^' . 'NUMBER'
+	Preceding states: {4, 6, 11, 30, 31, 46}
+-----------------------------
+With 'NUMBER', go to state 41
+
+=============================
+STATE NUMBER: 36
+=============================
+[28] RegularExpression --> RegularExpression '_' . 'NUMBER' '^' 'NUMBER'
+	Preceding states: {4, 6, 11, 30, 31, 46}
+[29] RegularExpression --> RegularExpression '_' . 'NUMBER' '~'
+	Preceding states: {4, 6, 11, 30, 31, 46}
+-----------------------------
+With 'NUMBER', go to state 37
+
+=============================
+STATE NUMBER: 37
+=============================
+[28] RegularExpression --> RegularExpression '_' 'NUMBER' . '^' 'NUMBER'
+	Preceding states: {4, 6, 11, 30, 31, 46}
+[29] RegularExpression --> RegularExpression '_' 'NUMBER' . '~'
+	Preceding states: {4, 6, 11, 30, 31, 46}
+-----------------------------
+With '^', go to state 38
+With '~', go to state 39
+
+=============================
+STATE NUMBER: 38
+=============================
+[28] RegularExpression --> RegularExpression '_' 'NUMBER' '^' . 'NUMBER'
+	Preceding states: {4, 6, 11, 30, 31, 46}
+-----------------------------
+With 'NUMBER', go to state 40
+
+=============================
+STATE NUMBER: 39
+=============================
+[29] RegularExpression --> RegularExpression '_' 'NUMBER' '~' .
+	Preceding states: {4, 6, 11, 30, 31, 46}
+	Lookahead set: {'$E_O_I$', '|', '.', '?', '+', '*', '_', '^', ';', ')'}
+-----------------------------
+
+=============================
+STATE NUMBER: 40
+=============================
+[28] RegularExpression --> RegularExpression '_' 'NUMBER' '^' 'NUMBER' .
+	Preceding states: {4, 6, 11, 30, 31, 46}
+	Lookahead set: {'$E_O_I$', '|', '.', '?', '+', '*', '_', '^', ';', ')'}
+-----------------------------
+
+=============================
+STATE NUMBER: 41
+=============================
+[27] RegularExpression --> RegularExpression '^' 'NUMBER' .
+	Preceding states: {4, 6, 11, 30, 31, 46}
+	Lookahead set: {'$E_O_I$', '|', '.', '?', '+', '*', '_', '^', ';', ')'}
+-----------------------------
+
+=============================
+STATE NUMBER: 42
+=============================
+This state has conflicts:
+
+Resolved   R/S conflict: choosing R23	over S30, 	on input '|'
+Resolved   S/R conflict: choosing S31	over R23, 	on input '.'
+Resolved   S/R conflict: choosing S32	over R23, 	on input '?'
+Resolved   S/R conflict: choosing S33	over R23, 	on input '+'
+Resolved   S/R conflict: choosing S34	over R23, 	on input '*'
+Resolved   S/R conflict: choosing S35	over R23, 	on input '^'
+Resolved   S/R conflict: choosing S36	over R23, 	on input '_'
+-----------------------------
+[22] RegularExpression --> RegularExpression . '|' RegularExpression
+	Preceding states: {31}
+[23] RegularExpression --> RegularExpression . '.' RegularExpression
+	Preceding states: {31}
+[23] RegularExpression --> RegularExpression '.' RegularExpression .
+	Preceding states: {4, 6, 11, 30, 31, 46}
+	Lookahead set: {'$E_O_I$', '|', '.', '?', '+', '*', '_', '^', ';', ')'}
+[24] RegularExpression --> RegularExpression . '?'
+	Preceding states: {31}
+[25] RegularExpression --> RegularExpression . '+'
+	Preceding states: {31}
+[26] RegularExpression --> RegularExpression . '*'
+	Preceding states: {31}
+[27] RegularExpression --> RegularExpression . '^' 'NUMBER'
+	Preceding states: {31}
+[28] RegularExpression --> RegularExpression . '_' 'NUMBER' '^' 'NUMBER'
+	Preceding states: {31}
+[29] RegularExpression --> RegularExpression . '_' 'NUMBER' '~'
+	Preceding states: {31}
+-----------------------------
+With '|', go to state 30
+With '.', go to state 31
+With '?', go to state 32
+With '+', go to state 33
+With '*', go to state 34
+With '^', go to state 35
+With '_', go to state 36
+
+=============================
+STATE NUMBER: 43
+=============================
+[21] RegularExpression --> 'IDENTIFIER' .
+	Preceding states: {4, 11, 30, 31, 46}
+	Lookahead set: {'$E_O_I$', '|', '.', '?', '+', '*', '_', '^', ';', ')'}
+-----------------------------
+
+=============================
+STATE NUMBER: 44
+=============================
+This state has conflicts:
+
+Resolved   S/R conflict: choosing S30	over R22, 	on input '|'
+Resolved   S/R conflict: choosing S31	over R22, 	on input '.'
+Resolved   S/R conflict: choosing S32	over R22, 	on input '?'
+Resolved   S/R conflict: choosing S33	over R22, 	on input '+'
+Resolved   S/R conflict: choosing S34	over R22, 	on input '*'
+Resolved   S/R conflict: choosing S35	over R22, 	on input '^'
+Resolved   S/R conflict: choosing S36	over R22, 	on input '_'
+-----------------------------
+[22] RegularExpression --> RegularExpression . '|' RegularExpression
+	Preceding states: {30}
+[22] RegularExpression --> RegularExpression '|' RegularExpression .
+	Preceding states: {4, 6, 11, 30, 31, 46}
+	Lookahead set: {'$E_O_I$', '|', '.', '?', '+', '*', '_', '^', ';', ')'}
+[23] RegularExpression --> RegularExpression . '.' RegularExpression
+	Preceding states: {30}
+[24] RegularExpression --> RegularExpression . '?'
+	Preceding states: {30}
+[25] RegularExpression --> RegularExpression . '+'
+	Preceding states: {30}
+[26] RegularExpression --> RegularExpression . '*'
+	Preceding states: {30}
+[27] RegularExpression --> RegularExpression . '^' 'NUMBER'
+	Preceding states: {30}
+[28] RegularExpression --> RegularExpression . '_' 'NUMBER' '^' 'NUMBER'
+	Preceding states: {30}
+[29] RegularExpression --> RegularExpression . '_' 'NUMBER' '~'
+	Preceding states: {30}
+-----------------------------
+With '|', go to state 30
+With '.', go to state 31
+With '?', go to state 32
+With '+', go to state 33
+With '*', go to state 34
+With '^', go to state 35
+With '_', go to state 36
+
+=============================
+STATE NUMBER: 45
+=============================
+[9] Action --> RegularExpression $ACTION0$ ';' .
+	Preceding states: {6}
+	Lookahead set: {'$E_O_I$', 'error', 'IDENTIFIER', 'help', 'syntax', 'trace', '(', 'quit'}
+-----------------------------
+
+=============================
+STATE NUMBER: 46
+=============================
+[20] RegularExpression --> . '(' ')'
+	Preceding states: {46}
+[21] RegularExpression --> . 'IDENTIFIER'
+	Preceding states: {46}
+[22] RegularExpression --> . RegularExpression '|' RegularExpression
+	Preceding states: {46}
+[23] RegularExpression --> . RegularExpression '.' RegularExpression
+	Preceding states: {46}
+[24] RegularExpression --> . RegularExpression '?'
+	Preceding states: {46}
+[25] RegularExpression --> . RegularExpression '+'
+	Preceding states: {46}
+[26] RegularExpression --> . RegularExpression '*'
+	Preceding states: {46}
+[27] RegularExpression --> . RegularExpression '^' 'NUMBER'
+	Preceding states: {46}
+[28] RegularExpression --> . RegularExpression '_' 'NUMBER' '^' 'NUMBER'
+	Preceding states: {46}
+[29] RegularExpression --> . RegularExpression '_' 'NUMBER' '~'
+	Preceding states: {46}
+[30] RegularExpression --> . '(' RegularExpression ')'
+	Preceding states: {46}
+[31] Definition --> 'IDENTIFIER' '=' . RegularExpression
+	Preceding states: {5, 6}
+	Follow set: {'$E_O_I$', ';'}
+-----------------------------
+With RegularExpression, go to state 47
+With '(', go to state 11
+With 'IDENTIFIER', go to state 43
+
+=============================
+STATE NUMBER: 47
+=============================
+[22] RegularExpression --> RegularExpression . '|' RegularExpression
+	Preceding states: {46}
+[23] RegularExpression --> RegularExpression . '.' RegularExpression
+	Preceding states: {46}
+[24] RegularExpression --> RegularExpression . '?'
+	Preceding states: {46}
+[25] RegularExpression --> RegularExpression . '+'
+	Preceding states: {46}
+[26] RegularExpression --> RegularExpression . '*'
+	Preceding states: {46}
+[27] RegularExpression --> RegularExpression . '^' 'NUMBER'
+	Preceding states: {46}
+[28] RegularExpression --> RegularExpression . '_' 'NUMBER' '^' 'NUMBER'
+	Preceding states: {46}
+[29] RegularExpression --> RegularExpression . '_' 'NUMBER' '~'
+	Preceding states: {46}
+[31] Definition --> 'IDENTIFIER' '=' RegularExpression .
+	Preceding states: {5, 6}
+	Lookahead set: {'$E_O_I$', ';'}
+-----------------------------
+With '|', go to state 30
+With '.', go to state 31
+With '?', go to state 32
+With '+', go to state 33
+With '*', go to state 34
+With '^', go to state 35
+With '_', go to state 36
+
+=============================
+STATE NUMBER: 48
+=============================
+[20] RegularExpression --> '(' ')' .
+	Preceding states: {4, 6, 11, 30, 31, 46}
+	Lookahead set: {'$E_O_I$', '|', '.', '?', '+', '*', '_', '^', ';', ')'}
+-----------------------------
+
+=============================
+STATE NUMBER: 49
+=============================
+[22] RegularExpression --> RegularExpression . '|' RegularExpression
+	Preceding states: {11}
+[23] RegularExpression --> RegularExpression . '.' RegularExpression
+	Preceding states: {11}
+[24] RegularExpression --> RegularExpression . '?'
+	Preceding states: {11}
+[25] RegularExpression --> RegularExpression . '+'
+	Preceding states: {11}
+[26] RegularExpression --> RegularExpression . '*'
+	Preceding states: {11}
+[27] RegularExpression --> RegularExpression . '^' 'NUMBER'
+	Preceding states: {11}
+[28] RegularExpression --> RegularExpression . '_' 'NUMBER' '^' 'NUMBER'
+	Preceding states: {11}
+[29] RegularExpression --> RegularExpression . '_' 'NUMBER' '~'
+	Preceding states: {11}
+[30] RegularExpression --> '(' RegularExpression . ')'
+	Preceding states: {4, 6, 11, 30, 31, 46}
+-----------------------------
+With '|', go to state 30
+With '.', go to state 31
+With '?', go to state 32
+With '+', go to state 33
+With '*', go to state 34
+With '^', go to state 35
+With '_', go to state 36
+With ')', go to state 50
+
+=============================
+STATE NUMBER: 50
+=============================
+[30] RegularExpression --> '(' RegularExpression ')' .
+	Preceding states: {4, 6, 11, 30, 31, 46}
+	Lookahead set: {'$E_O_I$', '|', '.', '?', '+', '*', '_', '^', ';', ')'}
+-----------------------------
+
+=============================
+STATE NUMBER: 51
+=============================
+[33] Exit --> 'quit' $ACTION6$ . ';'
+	Preceding states: {6}
+-----------------------------
+With ';', go to state 52
+
+=============================
+STATE NUMBER: 52
+=============================
+[33] Exit --> 'quit' $ACTION6$ ';' .
+	Preceding states: {6}
+	Lookahead set: {'$E_O_I$'}
+-----------------------------
+
+=============================
+STATE NUMBER: 53
+=============================
+[4] $ROOTS$ --> '$Definition_switch$' Definition .
+	Preceding states: {0}
+	Lookahead set: {'$E_O_I$'}
+-----------------------------
+
+=============================
+STATE NUMBER: 54
+=============================
+[31] Definition --> 'IDENTIFIER' . '=' RegularExpression
+	Preceding states: {5}
+-----------------------------
+With '=', go to state 46
+
+=============================
+STATE NUMBER: 55
+=============================
+[3] $ROOTS$ --> '$RegularExpression_switch$' RegularExpression .
+	Preceding states: {0}
+	Lookahead set: {'$E_O_I$'}
+[22] RegularExpression --> RegularExpression . '|' RegularExpression
+	Preceding states: {4}
+[23] RegularExpression --> RegularExpression . '.' RegularExpression
+	Preceding states: {4}
+[24] RegularExpression --> RegularExpression . '?'
+	Preceding states: {4}
+[25] RegularExpression --> RegularExpression . '+'
+	Preceding states: {4}
+[26] RegularExpression --> RegularExpression . '*'
+	Preceding states: {4}
+[27] RegularExpression --> RegularExpression . '^' 'NUMBER'
+	Preceding states: {4}
+[28] RegularExpression --> RegularExpression . '_' 'NUMBER' '^' 'NUMBER'
+	Preceding states: {4}
+[29] RegularExpression --> RegularExpression . '_' 'NUMBER' '~'
+	Preceding states: {4}
+-----------------------------
+With '|', go to state 30
+With '.', go to state 31
+With '?', go to state 32
+With '+', go to state 33
+With '*', go to state 34
+With '^', go to state 35
+With '_', go to state 36
+
+=============================
+STATE NUMBER: 56
+=============================
+[2] $ROOTS$ --> '$Session_switch$' Session .
+	Preceding states: {0}
+	Lookahead set: {'$E_O_I$'}
+-----------------------------
+*** Compressing parsing tables ... 
+***	3 rows eliminated in action table
+***	40 rows eliminated in goto table
+*** Table compression completed in 2 ms
+
+
+ACTION TABLE:
+
+	[1]	[2]	[3]	[4]	[5]	[6]	[7]	[8]	[9]	[10]	[11]	[12]	[13]	[14]	[15]	[16]	[17]	[18]	[19]	[20]	[21]	[22]	[23]
+	________________________________________________________________________________________________________________________________________________________________________________________
+[0]	 R6	 R6	 S3	 S4	 S5	 R6	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 R6	 R6	 R6	 R6	 - 	 - 	 - 	 R6
+[1]	 A	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[2]	 R1	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[3]	 R6	 R6	 - 	 - 	 - 	 R6	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 R6	 R6	 R6	 R6	 - 	 - 	 - 	 R6
+[4]	 - 	 - 	 - 	 - 	 - 	 S43	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 S11	 - 	 - 	 - 	 - 
+[5]	 - 	 - 	 - 	 - 	 - 	 S54	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[6]	 R34	 S18	 - 	 - 	 - 	 S12	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 S15	 S16	 S17	 S11	 - 	 - 	 - 	 S10
+[7]	 R5	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[8]	 R7	 R7	 - 	 - 	 - 	 R7	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 R7	 R7	 R7	 R7	 - 	 - 	 - 	 R7
+[9]	 R35	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[10]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 R32	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[11]	 - 	 - 	 - 	 - 	 - 	 S43	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 S11	 S48	 - 	 - 	 - 
+[12]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 R21	 R21	 R21	 R21	 R21	 R21	 R21	 R21	 - 	 - 	 - 	 - 	 - 	 - 	 S46	 - 
+[13]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 S30	 S31	 S32	 S33	 S34	 S36	 S35	 R8	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[14]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 R10	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[15]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 R12	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[16]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 R14	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[17]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 R16	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[18]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 R18	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[19]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 S20	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[20]	 R19	 R19	 - 	 - 	 - 	 R19	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 R19	 R19	 R19	 R19	 - 	 - 	 - 	 R19
+[21]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 S22	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[22]	 R17	 R17	 - 	 - 	 - 	 R17	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 R17	 R17	 R17	 R17	 - 	 - 	 - 	 R17
+[23]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 S24	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[24]	 R15	 R15	 - 	 - 	 - 	 R15	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 R15	 R15	 R15	 R15	 - 	 - 	 - 	 R15
+[25]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 S26	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[26]	 R13	 R13	 - 	 - 	 - 	 R13	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 R13	 R13	 R13	 R13	 - 	 - 	 - 	 R13
+[27]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 S28	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[28]	 R11	 R11	 - 	 - 	 - 	 R11	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 R11	 R11	 R11	 R11	 - 	 - 	 - 	 R11
+[29]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 S45	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[30]	 - 	 - 	 - 	 - 	 - 	 S43	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 S11	 - 	 - 	 - 	 - 
+[31]	 - 	 - 	 - 	 - 	 - 	 S43	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 S11	 - 	 - 	 - 	 - 
+[32]	 R24	 - 	 - 	 - 	 - 	 - 	 - 	 R24	 R24	 R24	 R24	 R24	 R24	 R24	 R24	 - 	 - 	 - 	 - 	 R24	 - 	 - 	 - 
+[33]	 R25	 - 	 - 	 - 	 - 	 - 	 - 	 R25	 R25	 R25	 R25	 R25	 R25	 R25	 R25	 - 	 - 	 - 	 - 	 R25	 - 	 - 	 - 
+[34]	 R26	 - 	 - 	 - 	 - 	 - 	 - 	 R26	 R26	 R26	 R26	 R26	 R26	 R26	 R26	 - 	 - 	 - 	 - 	 R26	 - 	 - 	 - 
+[35]	 - 	 - 	 - 	 - 	 - 	 - 	 S41	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[36]	 - 	 - 	 - 	 - 	 - 	 - 	 S37	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[37]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 S38	 - 	 - 	 - 	 - 	 - 	 - 	 S39	 - 	 - 
+[38]	 - 	 - 	 - 	 - 	 - 	 - 	 S40	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[39]	 R29	 - 	 - 	 - 	 - 	 - 	 - 	 R29	 R29	 R29	 R29	 R29	 R29	 R29	 R29	 - 	 - 	 - 	 - 	 R29	 - 	 - 	 - 
+[40]	 R28	 - 	 - 	 - 	 - 	 - 	 - 	 R28	 R28	 R28	 R28	 R28	 R28	 R28	 R28	 - 	 - 	 - 	 - 	 R28	 - 	 - 	 - 
+[41]	 R27	 - 	 - 	 - 	 - 	 - 	 - 	 R27	 R27	 R27	 R27	 R27	 R27	 R27	 R27	 - 	 - 	 - 	 - 	 R27	 - 	 - 	 - 
+[42]	 R23	 - 	 - 	 - 	 - 	 - 	 - 	 R23	 S31	 S32	 S33	 S34	 S36	 S35	 R23	 - 	 - 	 - 	 - 	 R23	 - 	 - 	 - 
+[43]	 R21	 - 	 - 	 - 	 - 	 - 	 - 	 R21	 R21	 R21	 R21	 R21	 R21	 R21	 R21	 - 	 - 	 - 	 - 	 R21	 - 	 - 	 - 
+[44]	 R22	 - 	 - 	 - 	 - 	 - 	 - 	 S30	 S31	 S32	 S33	 S34	 S36	 S35	 R22	 - 	 - 	 - 	 - 	 R22	 - 	 - 	 - 
+[45]	 R9	 R9	 - 	 - 	 - 	 R9	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 R9	 R9	 R9	 R9	 - 	 - 	 - 	 R9
+[46]	 - 	 - 	 - 	 - 	 - 	 S43	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 S11	 - 	 - 	 - 	 - 
+[47]	 R31	 - 	 - 	 - 	 - 	 - 	 - 	 S30	 S31	 S32	 S33	 S34	 S36	 S35	 R31	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[48]	 R20	 - 	 - 	 - 	 - 	 - 	 - 	 R20	 R20	 R20	 R20	 R20	 R20	 R20	 R20	 - 	 - 	 - 	 - 	 R20	 - 	 - 	 - 
+[49]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 S30	 S31	 S32	 S33	 S34	 S36	 S35	 - 	 - 	 - 	 - 	 - 	 S50	 - 	 - 	 - 
+[50]	 R30	 - 	 - 	 - 	 - 	 - 	 - 	 R30	 R30	 R30	 R30	 R30	 R30	 R30	 R30	 - 	 - 	 - 	 - 	 R30	 - 	 - 	 - 
+[51]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 S52	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[52]	 R33	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[53]	 R4	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[54]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 S46	 - 
+[55]	 R3	 - 	 - 	 - 	 - 	 - 	 - 	 S30	 S31	 S32	 S33	 S34	 S36	 S35	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[56]	 R2	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+
+GOTO TABLE:
+
+	[1]	[2]	[3]	[4]	[5]	[6]	[7]	[8]	[9]	[10]	[11]	[12]	[13]	[14]	[15]
+	________________________________________________________________________________________________________________
+[0]	 1 	 2 	 - 	 - 	 6 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[1]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[2]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[3]	 - 	 56 	 - 	 - 	 6 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[4]	 - 	 - 	 55 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[5]	 - 	 - 	 - 	 53 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[6]	 - 	 - 	 13 	 14 	 - 	 7 	 8 	 - 	 - 	 - 	 - 	 - 	 - 	 9 	 - 
+[7]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[8]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[9]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[10]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 51 
+[11]	 - 	 - 	 49 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[12]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[13]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 29 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[14]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 27 	 - 	 - 	 - 	 - 	 - 	 - 
+[15]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 25 	 - 	 - 	 - 	 - 	 - 
+[16]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 23 	 - 	 - 	 - 	 - 
+[17]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 21 	 - 	 - 	 - 
+[18]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 19 	 - 	 - 
+[19]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[20]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[21]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[22]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[23]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[24]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[25]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[26]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[27]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[28]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[29]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[30]	 - 	 - 	 44 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[31]	 - 	 - 	 42 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[32]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[33]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[34]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[35]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[36]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[37]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[38]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[39]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[40]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[41]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[42]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[43]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[44]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[45]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[46]	 - 	 - 	 47 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[47]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[48]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[49]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[50]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[51]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[52]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[53]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[54]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[55]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+[56]	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 	 - 
+
